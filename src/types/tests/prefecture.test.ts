@@ -2,7 +2,7 @@ import { prefectureApi } from "@/lib/api/prefecture";
 import { apiClient } from "@/lib/api/client";
 import type { GetPrefecturesResponse, GetPopulationResponse } from "@/types/api";
 
-jest.mock('@lib/api/client')
+jest.mock('@/lib/api/client')
 
 describe('PrefectureAPI', () => {
     beforeEach(() => {
