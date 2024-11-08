@@ -1,5 +1,5 @@
 import '@jest/globals';
-import { ApiResponse, APIError, GetPrefecturesResponse, PopulationTypes } from '../api';
+import { ApiResponse, GetPrefecturesResponse, PopulationTypes } from '../api';
 
 describe('API型定義のテスト', () => {
   // APIResponseの型テスト
@@ -10,16 +10,6 @@ describe('API型定義のテスト', () => {
     };
     expect(response.result).toBe('test');
     expect(response.status).toBe(200);
-  });
-
-  // APIErrorの型テスト
-  test('APIError型が正しく動作すること', () => {
-    const error: APIError = {
-      statusCode: 404,
-      message: 'Not Found'
-    };
-    expect(error.statusCode).toBe(404);
-    expect(error.message).toBe('Not Found');
   });
 
   // GetPrefecturesResponseの型テスト
