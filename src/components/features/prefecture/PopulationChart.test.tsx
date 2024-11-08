@@ -2,6 +2,18 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { PopulationChart } from './PopulationChart'
 import { PrefecturePopulation } from '@/types/api'
 
+// Rechartsコンポーネントのモック
+jest.mock('recharts', () => ({
+    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => children,
+    LineChart: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    Line: () => null,
+    XAxis: () => null,
+    YAxis: () => null,
+    CartesianGrid: () => null,
+    Tooltip: () => null,
+    Legend: () => null
+  }))
+
 // テスト用のモックデータ
 const mockPopulationData: PrefecturePopulation[] = [
   {
