@@ -33,13 +33,6 @@ export type ApiResponse<T> = {
 }
 
 
-//APIエラーの型
-export type APIError = {
-    statusCode: number;
-    message: string;
-}
-
-
 //都道府県一覧のAPIレスポンス
 export type GetPrefecturesResponse = ApiResponse<{prefectures: prefecture[]}>;
 
