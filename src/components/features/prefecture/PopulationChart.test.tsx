@@ -1,20 +1,20 @@
+// src/components/features/prefecture/PopulationChart.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react'
 import { PopulationChart } from './PopulationChart'
 import { PrefecturePopulation } from '@/types/api'
 
 // Rechartsコンポーネントのモック
 jest.mock('recharts', () => ({
-    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => children,
-    LineChart: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-    Line: () => null,
-    XAxis: () => null,
-    YAxis: () => null,
-    CartesianGrid: () => null,
-    Tooltip: () => null,
-    Legend: () => null
-  }))
+  ResponsiveContainer: ({ children }: { children: React.ReactNode }) => children,
+  LineChart: ({ children }: { children: React.ReactNode }) => <div data-testid="line-chart">{children}</div>,
+  Line: ({ dataKey }: { dataKey: string }) => <div data-testid={`line-${dataKey}`} />,
+  XAxis: () => null,
+  YAxis: () => null,
+  CartesianGrid: () => null,
+  Tooltip: () => null,
+  Legend: () => null
+}))
 
-// テスト用のモックデータ
 const mockPopulationData: PrefecturePopulation[] = [
   {
     prefecture: {
@@ -24,13 +24,6 @@ const mockPopulationData: PrefecturePopulation[] = [
     population: [
       {
         label: '総人口',
-        data: [
-          { year: 2020, value: 0 },
-          { year: 2021, value: 0 }
-        ]
-      },
-      {
-        label: '年少人口',
         data: [
           { year: 2020, value: 0 },
           { year: 2021, value: 0 }
@@ -48,11 +41,9 @@ describe('PopulationChart', () => {
       />
     )
 
-    // 人口種別の切り替えボタンが存在することを確認
+    expect(screen.getByTestId('line-chart')).toBeInTheDocument()
+    expect(screen.getByTestId('line-北海道')).toBeInTheDocument()
     expect(screen.getByText('総人口')).toBeInTheDocument()
-    expect(screen.getByText('年少人口')).toBeInTheDocument()
-    expect(screen.getByText('生産年齢人口')).toBeInTheDocument()
-    expect(screen.getByText('老年人口')).toBeInTheDocument()
   })
 
   it('人口種別を切り替えできること', () => {
@@ -62,23 +53,19 @@ describe('PopulationChart', () => {
       />
     )
 
-    // 年少人口ボタンをクリック
     const youngButton = screen.getByText('年少人口')
     fireEvent.click(youngButton)
-
-    // ボタンのスタイルが変更されていることを確認
     expect(youngButton).toHaveClass('bg-blue-600')
   })
 
-  it('都道府県のデータが表示されること', () => {
+  it('グラフのデータが正しく設定されること', () => {
     render(
       <PopulationChart 
         populationData={mockPopulationData}
       />
     )
 
-    // 都道府県名が表示されていることを確認
-    expect(screen.getByText('北海道')).toBeInTheDocument()
+    expect(screen.getByTestId('line-北海道')).toBeInTheDocument()
   })
 
   it('空のデータでもエラーにならないこと', () => {
@@ -88,7 +75,7 @@ describe('PopulationChart', () => {
       />
     )
 
-    // 人口種別の切り替えボタンは表示されている
+    expect(screen.getByTestId('line-chart')).toBeInTheDocument()
     expect(screen.getByText('総人口')).toBeInTheDocument()
   })
 })

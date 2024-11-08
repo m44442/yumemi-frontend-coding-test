@@ -11,22 +11,27 @@ import {
 } from 'recharts'
 import { useState, useMemo } from 'react'
 
+// 都道府県ごとの線の色を定義
 const colors = [
   '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
   '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'
 ];
 
+// コンポーネントのプロパティ型定義
 type PopulationChartProps = {
-  populationData: PrefecturePopulation[]
-  className?: string
+  populationData: PrefecturePopulation[]  // 人口データの配列
+  className?: string                      // スタイリング用のクラス名
 }
 
+// 人口推移グラフコンポーネント
 export const PopulationChart = ({ 
   populationData,
   className = '' 
 }: PopulationChartProps) => {
+    // 表示する人口種別の状態管理（総人口/年少人口/生産年齢人口/老年人口）
     const [selectedType, setSelectedType] = useState<PopulationDataType>(PopulationTypes.TOTAL)
 
+  // グラフ表示用データの生成
   const chartData = useMemo(() => {
     const years = new Set<number>()
     
