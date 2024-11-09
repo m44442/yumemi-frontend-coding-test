@@ -56,4 +56,30 @@ describe('Checkbox', () => {
 
     expect(mockOnChange).toHaveBeenLastCalledWith(false)
   })
+
+  it('チェックマークをつけたり外したりできること', () => {
+    const handleChange = jest.fn();
+    render(<Checkbox label="Test Checkbox" onChange={handleChange} />);
+
+    const checkbox = screen.getByRole('checkbox');
+    expect(checkbox).not.toBeChecked();
+
+    // チェックをつける
+    fireEvent.click(checkbox);
+    expect(checkbox).toBeChecked();
+    expect(handleChange).toHaveBeenCalledWith(true);
+
+    // チェックを外す
+    fireEvent.click(checkbox);
+    expect(checkbox).not.toBeChecked();
+    expect(handleChange).toHaveBeenCalledWith(false);
+  });
+
+  it('初期状態がチェックされている場合', () => {
+    const handleChange = jest.fn();
+    render(<Checkbox label="Test Checkbox" checked={true} onChange={handleChange} />);
+
+    const checkbox = screen.getByRole('checkbox');
+    expect(checkbox).toBeChecked();
+  });
 })

@@ -12,7 +12,8 @@ export default function Home() {
     loading, 
     error, 
     fetchPrefectures, 
-    fetchPopulationData 
+    fetchPopulationData,
+    removePopulationData
   } = usePrefectureData()
 
   useEffect(() => {
@@ -32,7 +33,11 @@ export default function Home() {
       <PrefectureSelector 
         prefectures={prefectures}
         onSelect={(prefCode, checked) => {
-          if (checked) fetchPopulationData(prefCode)
+          if (checked) {
+            fetchPopulationData(prefCode)
+          } else {
+            removePopulationData(prefCode)
+          }
         }}
         loading={loading}
       />

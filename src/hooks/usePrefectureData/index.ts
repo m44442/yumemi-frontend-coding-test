@@ -43,6 +43,14 @@ export const usePrefectureData = () => {
    }
  }, [])
 
+ const removePopulationData = useCallback((prefCode: number) => {
+  setPopulationData(prev => {
+    const newData = new Map(prev)
+    newData.delete(prefCode)
+    return newData
+  })
+ }, [])
+
  return {
    prefectures,
    populationData,
@@ -50,5 +58,6 @@ export const usePrefectureData = () => {
    error,
    fetchPrefectures,
    fetchPopulationData,
+   removePopulationData
  }
 }
