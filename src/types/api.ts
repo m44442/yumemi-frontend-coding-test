@@ -28,17 +28,22 @@ export type PrefecturePopulation = {
 
 //APIレスポンスの型
 export type ApiResponse<T> = {
+    message: string | null;
     result: T;
-    status: number;
 }
 
 
 //都道府県一覧のAPIレスポンス
-export type GetPrefecturesResponse = ApiResponse<{prefectures: prefecture[]}>;
+export type GetPrefecturesResponse = ApiResponse<prefecture[]>;
 
 
 //人口構成のAPIレスポンス
-export type GetPopulationResponse = ApiResponse<PrefecturePopulation>;
+export type PopulationCompositionPerYear = {
+    boundaryYear: number;
+    data: populationCategory[];
+}
+
+export type GetPopulationResponse = ApiResponse<PopulationCompositionPerYear>;
 
 
 //人口データの種別
