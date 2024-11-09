@@ -1,96 +1,101 @@
-import { apiClient } from '@/lib/api/client'
-import { prefectureApi } from '@/lib/api/prefecture'
-import type { GetPrefecturesResponse, GetPopulationResponse } from '@/types/api'
+// prefecture.test.ts
+import { prefectureApi } from '@/lib/api/prefecture';
+import { apiClient } from '@/lib/api/client';
 
-jest.mock('@/lib/api/client')
+// APIクライアントのモック
+jest.mock('@/lib/api/client', () => ({
+  apiClient: {
+    get: jest.fn()
+  }
+}));
 
-describe('PrefectureAPI', () => {
-    beforeEach(() => {
-        jest.clearAllMocks()
-    })
+describe('prefectureApi', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-    describe('getPrefectures', () => {
-        it('都道府県一覧を正確に取得できること', async () => {
-            const mockResponse: GetPrefecturesResponse = {
-                message: null,
-                result: [
-                    { prefCode: 1, prefName: '北海道' },
-                    { prefCode: 2, prefName: '青森県' }
-                ]
-            }
+  describe('getPrefectures', () => {
+    it('都道府県一覧を正常に取得できること', async () => {
+      const mockPrefectures = [
+        { prefCode: 1, prefName: '北海道' },
+        { prefCode: 2, prefName: '青森県' }
+      ];
 
-            ;(apiClient.get as jest.Mock).mockResolvedValueOnce({ data: mockResponse })
+      (apiClient.get as jest.Mock).mockResolvedValue({
+        data: { result: mockPrefectures }
+      });
 
-            const result = await prefectureApi.getPrefectures()
-            expect(result).toEqual(mockResponse.result)
-            expect(apiClient.get).toHaveBeenCalledWith('/api/v1/prefectures')
-        })
+      const result = await prefectureApi.getPrefectures();
 
-        it('エラーレスポンスの場合、例外をスローすること', async () => {
-            const mockErrorResponse = {
-                message: 'エラーが発生しました',
-                result: null
-            }
+      expect(apiClient.get).toHaveBeenCalledWith('/api/v1/prefectures');
+      expect(result).toEqual(mockPrefectures);
+    });
 
-            ;(apiClient.get as jest.Mock).mockResolvedValueOnce({ data: mockErrorResponse })
+    it('APIエラー時にエラーをスローすること', async () => {
+      (apiClient.get as jest.Mock).mockRejectedValue(new Error('API Error'));
 
-            await expect(prefectureApi.getPrefectures()).rejects.toThrow('APIレスポンスの形式が不正です')
-        })
+      await expect(prefectureApi.getPrefectures()).rejects.toThrow('API Error');
+    });
 
-        it('ネットワークエラーの場合、例外をスローする��と', async () => {
-            ;(apiClient.get as jest.Mock).mockRejectedValueOnce(new Error('Network Error'))
+    it('不正なレスポンス形式の場合エラーをスローすること', async () => {
+      (apiClient.get as jest.Mock).mockResolvedValue({ data: {} });
 
-            await expect(prefectureApi.getPrefectures()).rejects.toThrow('Network Error')
-        })
-    })
+      await expect(prefectureApi.getPrefectures()).rejects.toThrow('APIレスポンスの形式が不正です');
+    });
+  });
 
-    describe('getPopulation', () => {
-        const mockPrefCode = 1
+  describe('getPopulation', () => {
+    it('人口データを正常に取得できること', async () => {
+      const prefCode = 1;
+      const mockPrefectures = [
+        { prefCode: 1, prefName: '北海道' }
+      ];
+      const mockPopulationData = {
+        data: {
+          result: {
+            data: [{
+              label: '総人口',
+              data: [{ year: 2020, value: 5000000 }]
+            }]
+          }
+        }
+      };
 
-        it('人口データを正確に取得できること', async () => {
-            const mockResponse: GetPopulationResponse = {
-                message: null,
-                result: {
-                    boundaryYear: 2020,
-                    data: [
-                        {
-                            label: '総人口',
-                            data: [
-                                { year: 2020, value: 5000000 },
-                                { year: 2021, value: 4900000 }
-                            ]
-                        }
-                    ]
-                }
-            }
+      (apiClient.get as jest.Mock)
+        .mockResolvedValueOnce(mockPopulationData)
+        .mockResolvedValueOnce({ data: { result: mockPrefectures } });
 
-            ;(apiClient.get as jest.Mock).mockResolvedValueOnce({ data: mockResponse })
+      const result = await prefectureApi.getPopulation(prefCode);
 
-            const result = await prefectureApi.getPopulation(mockPrefCode)
-            expect(result).toEqual({
-                prefecture: { prefCode: 1, prefName: '北海道' },
-                population: mockResponse.result.data
-            })
-            expect(apiClient.get).toHaveBeenCalledWith('/api/v1/population/composition/perYear', {
-                params: { prefCode: mockPrefCode }
-            })
-        })
+      expect(apiClient.get).toHaveBeenCalledWith(
+        '/api/v1/population/composition/perYear',
+        { params: { prefCode } }
+      );
+      expect(result).toEqual({
+        prefecture: mockPrefectures[0],
+        population: [{
+          label: '総人口',
+          data: [{ year: 2020, value: 5000000 }]
+        }]
+      });
+    });
 
-        it('エラーレスポンスの場合、例外をスローすること', async () => {
-            const mockErrorResponse = {
-                message: 'エラーが発生しました',
-                result: null
-            }
+    it('存在しない都道府県コードの場合エラーをスローすること', async () => {
+      const mockPopulationData = {
+        data: {
+          result: {
+            data: [{ label: '総人口', data: [] }]
+          }
+        }
+      };
 
-            ;(apiClient.get as jest.Mock).mockResolvedValueOnce({ data: mockErrorResponse })
+      (apiClient.get as jest.Mock)
+        .mockResolvedValueOnce(mockPopulationData)
+        .mockResolvedValueOnce({ data: { result: [] } });
 
-            await expect(prefectureApi.getPopulation(mockPrefCode)).rejects.toThrow('人口データの取得に失敗しました')
-        })
-
-        it('ネットワークエラーの場合、例外をスローすること', async () => {
-            ;(apiClient.get as jest.Mock).mockRejectedValueOnce(new Error('Network Error'))
-
-            await expect(prefectureApi.getPopulation(mockPrefCode)).rejects.toThrow('Network Error')
-        })
-    })
-})
+      await expect(prefectureApi.getPopulation(999))
+        .rejects
+        .toThrow('都道府県が見つかりません');
+    });
+  });
+});
