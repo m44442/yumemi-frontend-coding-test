@@ -1,4 +1,3 @@
-// prefecture.test.ts
 import { prefectureApi } from '@/lib/api/prefecture';
 import { apiClient } from '@/lib/api/client';
 
