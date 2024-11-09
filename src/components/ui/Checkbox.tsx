@@ -1,6 +1,7 @@
-type  CheckboxProps = {
+type CheckboxProps = {
     label: string;
-    onChange: (checked: boolean) => void
+    checked?: boolean;
+    onChange: (checked: boolean) => void;
     className?: string;
 }
 
