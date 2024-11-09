@@ -60,7 +60,7 @@ export const PopulationChart = ({ populationData = [], className = '' }: Populat
       </div>
 
       {chartData.length > 0 && (
-        <div className="h-[500px] w-full">
+        <div className="h-[300px] sm:h-[400px] md:h-[500px] w-full">
           <ResponsiveContainer>
             <LineChart data={chartData} margin={{ top: 10, right: 30, left: 10, bottom: 10 }}>
               <CartesianGrid strokeDasharray="3 3" />
