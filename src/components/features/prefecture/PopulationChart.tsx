@@ -12,41 +12,40 @@ const colors = [
 ];
 
 type PopulationChartProps = {
-  populationData: PrefecturePopulation[]
-  className?: string
+  populationData: PrefecturePopulation[] // 都道府県別人口データの配列
+  className?: string // カスタムクラス名
 }
 
 export const PopulationChart = ({ populationData = [], className = '' }: PopulationChartProps) => {
-  const [selectedType, setSelectedType] = useState<PopulationDataType>(PopulationTypes.TOTAL);
+  const [selectedType, setSelectedType] = useState<PopulationDataType>(PopulationTypes.TOTAL); // 選択された人口データの種類を管理
 
   const chartData = useMemo(() => {
     if (!populationData?.length) return [];
 
     const years = new Set<number>();
     populationData.forEach(prefData => {
-      const populationData = prefData.population?.find(p => p.label === selectedType);
-      populationData?.data.forEach(d => years.add(d.year));
+      const populationData = prefData.population?.find(p => p.label === selectedType); // 選択された種類の人口データを取得
+      populationData?.data.forEach(d => years.add(d.year)); // 年ごとのデータをセットに追加
     });
 
     return Array.from(years).sort().map(year => {
-      const dataPoint: { year: number; [key: string]: number | string } = { year };
+      const dataPoint: { year: number; [key: string]: number | string } = { year }; // 年をキーとするデータポイントを作成
       populationData.forEach(prefData => {
-        const data = prefData.population
-          ?.find(p => p.label === selectedType)
-          ?.data.find(d => d.year === year);
-        if (data) {
-          dataPoint[prefData.prefecture.prefName] = data.value;
+        const populationData = prefData.population?.find(p => p.label === selectedType);
+        const yearData = populationData?.data.find(d => d.year === year);
+        if (yearData) {
+          dataPoint[prefData.prefecture.prefName] = yearData.value; // 都道府県名をキーとして人口データを追加
         }
       });
       return dataPoint;
     });
-  }, [populationData, selectedType]);
+  }, [populationData, selectedType]); // populationDataとselectedTypeが変更されたときに再計算
 
-  if (!populationData.length) return null;
+  if (!populationData.length) return null; // データがない場合は何も表示しない
 
   return (
     <div className={className}>
-      <div className="mb-5 flex flex-wrap gap-2">
+      <div className="flex justify-center items-center mb-5 flex flex-wrap gap-2">
         {Object.values(PopulationTypes).map(type => (
           <button
             key={type}
@@ -73,10 +72,10 @@ export const PopulationChart = ({ populationData = [], className = '' }: Populat
                 <Line
                   key={prefData.prefecture.prefCode}
                   type="monotone"
-                  dataKey={prefData.prefecture.prefName}
-                  stroke={colors[index % colors.length]}
-                  strokeWidth={2}
-                  dot={false}
+                  dataKey={prefData.prefecture.prefName} // データキーとして都道府県名を使用
+                  stroke={colors[index % colors.length]} // 線の色を設定
+                  strokeWidth={2} // 線の太さを設定
+                  dot={false} // データポイントのドットを非表示
                 />
               ))}
             </LineChart>

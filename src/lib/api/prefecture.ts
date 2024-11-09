@@ -27,22 +27,26 @@ export const prefectureApi = {
  // 人口データを取得する
  async getPopulation(prefCode: number): Promise<PrefecturePopulation> {
    try {
+     // APIから人口データを取得
      const response = await apiClient.get<GetPopulationResponse>(`/api/v1/population/composition/perYear`, {
        params: { prefCode }
      });
-     
+    
+     // レスポンスに結果が含まれていない場合はエラーをスロー
      if (!response.data?.result) {
        throw new Error('人口データの取得に失敗しました');
      }
 
+     // 都道府県データを取得
      const prefectures = await this.getPrefectures();
      const prefecture = prefectures.find(p => p.prefCode === prefCode);
-     
+    
+     // 都道府県が見��からない場合はエラーをスロー
      if (!prefecture) {
        throw new Error('都道府県が見つかりません');
      }
 
-     // APIレスポンスを変換
+     // APIレスポンスを変換して返す
      return {
        prefecture,
        population: response.data.result.data.map(item => ({
@@ -54,6 +58,7 @@ export const prefectureApi = {
        }))
      };
    } catch (error) {
+     // エラーが発生した場合の処理
      console.error('Population API Error:', error);
      throw error;
    }

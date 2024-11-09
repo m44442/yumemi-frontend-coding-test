@@ -1,4 +1,3 @@
-// src/app/page.tsx
 'use client'
 
 import { useEffect } from 'react'
@@ -22,7 +21,7 @@ export default function Home() {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <h1 className="text-center text-2xl font-bold mb-8">都道府県別人口推移グラフ</h1>
+      <h1 className="flex justify-center items-center text-2xl font-bold mb-8">都道府県別総人口推移グラフ</h1>
 
       {error && (
         <div className="mb-4 text-red-600" role="alert">
@@ -44,7 +43,7 @@ export default function Home() {
 
       {populationData.size > 0 && (
         <PopulationChart 
-          populationData={Array.from(populationData.values())}
+          populationData={Array.from(populationData.values())}  // 人口データを配列に変換して渡す
         />
       )}
     </main>

@@ -1,4 +1,3 @@
-// PopulationChart.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
 import { PopulationChart } from './PopulationChart';
 import { PrefecturePopulation, PopulationTypes } from '@/types/api';

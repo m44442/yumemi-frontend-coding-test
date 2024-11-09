@@ -51,7 +51,7 @@ describe('Checkbox', () => {
     )
 
     const checkbox = screen.getByLabelText('テスト')
-    fireEvent.click(checkbox) // チェックを入れる
+    fireEvent.click(checkbox) // チェックをつける
     fireEvent.click(checkbox) // チェックを外す
 
     expect(mockOnChange).toHaveBeenLastCalledWith(false)
