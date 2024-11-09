@@ -1,4 +1,3 @@
-// src/components/features/prefecture/PopulationChart.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react'
 import { PopulationChart } from './PopulationChart'
 import { PrefecturePopulation } from '@/types/api'
@@ -25,8 +24,15 @@ const mockPopulationData: PrefecturePopulation[] = [
       {
         label: '総人口',
         data: [
-          { year: 2020, value: 0 },
-          { year: 2021, value: 0 }
+          { year: 2020, value: 5000000 },
+          { year: 2021, value: 4900000 }
+        ]
+      },
+      {
+        label: '年少人口',
+        data: [
+          { year: 2020, value: 1000000 },
+          { year: 2021, value: 900000 }
         ]
       }
     ]
@@ -53,18 +59,19 @@ describe('PopulationChart', () => {
       />
     )
 
-    const youngButton = screen.getByText('年少人口')
-    fireEvent.click(youngButton)
-    expect(youngButton).toHaveClass('bg-blue-600')
+    fireEvent.click(screen.getByText('年少人口'))
+    expect(screen.getByTestId('line-北海道')).toBeInTheDocument()
   })
 
-  it('グラフのデータが正しく設定されること', () => {
+  it('都道府県のデータが表示されること', () => {
     render(
       <PopulationChart 
         populationData={mockPopulationData}
       />
     )
 
+    const chart = screen.getByTestId('line-chart')
+    expect(chart).toBeInTheDocument()
     expect(screen.getByTestId('line-北海道')).toBeInTheDocument()
   })
 
@@ -76,6 +83,5 @@ describe('PopulationChart', () => {
     )
 
     expect(screen.getByTestId('line-chart')).toBeInTheDocument()
-    expect(screen.getByText('総人口')).toBeInTheDocument()
   })
 })

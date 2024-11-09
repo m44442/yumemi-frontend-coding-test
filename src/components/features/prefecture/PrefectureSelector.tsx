@@ -1,22 +1,45 @@
 import { prefecture } from '@/types/api'
 import { Checkbox } from '@/components/ui/Checkbox'
+import { useState, useCallback } from 'react'
 
 type PrefectureSelectorProps = {
   prefectures: prefecture[]
   onSelect: (prefCode: number, checked: boolean) => void
   className?: string
+  loading?: boolean
 }
 
 export const PrefectureSelector = ({ 
   prefectures = [], 
   onSelect,
-  className = '' 
+  className = '',
+  loading = false
 }: PrefectureSelectorProps) => {
-  // データがない場合の表示
-  if (!prefectures || prefectures.length === 0) {
+  // 選択された都道府県を管理
+  const [selectedPrefectures, setSelectedPrefectures] = useState<number[]>([]);
+
+  // チェックボックスの状態変更をハンドル
+  const handleChange = useCallback((prefCode: number, checked: boolean) => {
+    setSelectedPrefectures(prev => 
+      checked 
+        ? [...prev, prefCode]
+        : prev.filter(code => code !== prefCode)
+    );
+    onSelect(prefCode, checked);
+  }, [onSelect]);
+
+  if (loading) {
     return (
       <div className={`text-gray-500 ${className}`}>
         都道府県データを読み込み中...
+      </div>
+    );
+  }
+
+  if (!Array.isArray(prefectures) || prefectures.length === 0) {
+    return (
+      <div className={`text-gray-500 ${className}`}>
+        都道府県データがありません
       </div>
     );
   }
@@ -31,10 +54,11 @@ export const PrefectureSelector = ({
         <Checkbox
           key={pref.prefCode}
           label={pref.prefName}
-          onChange={(checked) => onSelect(pref.prefCode, checked)}
-          className="p-2"
+          checked={selectedPrefectures.includes(pref.prefCode)}
+          onChange={(checked) => handleChange(pref.prefCode, checked)}
+          className="p-2 border border-gray-200 rounded hover:bg-gray-50"
         />
       ))}
     </div>
-  )
-}
+  );
+};

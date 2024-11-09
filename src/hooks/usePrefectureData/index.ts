@@ -1,48 +1,53 @@
 import { useState, useCallback } from "react";
 import { prefectureApi } from "@/lib/api/prefecture";
-import type { prefecture, PrefecturePopulation } from "@/types/api";
-
+import type { 
+    prefecture, 
+    PrefecturePopulation, 
+} from "@/types/api";
 
 export const usePrefectureData = () => {
-    // 都道府県一覧の状態管理
+    // 状態管理
     const [prefectures, setPrefectures] = useState<prefecture[]>([]);
-
-    // 人口データの状態管理（都道府県コードをキーとしたMap）
     const [populationData, setPopulationData] = useState<Map<number, PrefecturePopulation>>(new Map());
-
-    // ローディング状態の管理
     const [loading, setLoading] = useState(false);
-    
-    // エラー状態の管理
     const [error, setError] = useState<string | null>(null);
 
-    // 都道府県一覧を取得する関数
+    // 都道府県一覧取得
     const fetchPrefectures = useCallback(async () => {
         setLoading(true);
-        setError(null);
         try {
             const data = await prefectureApi.getPrefectures();
-            setPrefectures(data);
+            console.log('Fetched prefectures data:', data);
+            if (Array.isArray(data)) {
+                setPrefectures(data);
+            } else {
+                throw new Error('Invalid data format');
+            }
         } catch (err) {
+            console.error('Prefecture fetch error:', err);
+            setError(err instanceof Error ? err.message : '予期せぬエラーが発生しました');
+            setPrefectures([]); // エラー時は空配列を設定
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    // 人口データ取得
+    const fetchPopulationData = useCallback(async (prefCode: number) => {
+        if (!prefCode) return;
+        
+        setLoading(true);
+        try {
+            const populationData = await prefectureApi.getPopulation(prefCode);
+            console.log('Fetched population data:', populationData);
+            setPopulationData(prev => new Map(prev).set(prefCode, populationData));
+        } catch (err) {
+            console.error('Population fetch error:', err);
             setError(err instanceof Error ? err.message : '予期せぬエラーが発生しました');
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }, [])
-
-    // 指定した都道府県の人口データを取得する関数
-    const fetchPopulationData = useCallback(async (prefCode: number) => {
-        setLoading(true)
-        setError(null)
-        try {
-            const data = await prefectureApi.getPopulation(prefCode)
-            setPopulationData((prev) => new Map(prev.set(prefCode, data)))
-        } catch (err) {
-            setError(err instanceof Error ? err.message : '予期せぬエラーが発生しました')
-        } finally {
-            setLoading(false)
-        }
-    }, [])
+    }, []);
 
     return {
         prefectures,
@@ -51,5 +56,5 @@ export const usePrefectureData = () => {
         error,
         fetchPrefectures,
         fetchPopulationData,
-    }
-}
+    };
+};

@@ -19,6 +19,10 @@ export default function Home() {
     fetchPrefectures()
   }, [fetchPrefectures])
 
+  useEffect(() => {
+    console.log('Home component updated:', { prefectures, loading, error });
+  }, [prefectures, loading, error]);
+
   // 都道府県選択時の処理
   const handlePrefectureSelect = (prefCode: number, checked: boolean) => {
     if (checked) {
@@ -48,8 +52,9 @@ export default function Home() {
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-4">都道府県を選択</h2>
         <PrefectureSelector 
-          prefectures={prefectures}
+          prefectures={prefectures || []}  // デフォルト値を設定
           onSelect={handlePrefectureSelect}
+          loading={loading}
         />
       </section>
 

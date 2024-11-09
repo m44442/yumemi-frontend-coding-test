@@ -10,7 +10,6 @@ const mockPrefectures: prefecture[] = [
 describe('PrefectureSelector', () => {
   it('都道府県一覧が表示されること', () => {
     const mockOnSelect = jest.fn()
-    
     render(
       <PrefectureSelector 
         prefectures={mockPrefectures}
@@ -24,7 +23,6 @@ describe('PrefectureSelector', () => {
 
   it('チェックボックスをクリックするとonSelectが呼ばれること', () => {
     const mockOnSelect = jest.fn()
-    
     render(
       <PrefectureSelector 
         prefectures={mockPrefectures}
@@ -36,35 +34,33 @@ describe('PrefectureSelector', () => {
     expect(mockOnSelect).toHaveBeenCalledWith(1, true)
   })
 
-  it('空の配列でもエラーにならないこと', () => {
+  it('ローディング中はメッセージが表示されること', () => {
     const mockOnSelect = jest.fn()
-    
     render(
       <PrefectureSelector 
         prefectures={[]}
         onSelect={mockOnSelect}
-      />
-    )
-    
-    // エラーが発生しないことを確認
-  })
-
-  it('データがない場合はローディングメッセージが表示されること', () => {
-    const mockOnSelect = jest.fn()
-    
-    render(
-      <PrefectureSelector 
-        prefectures={[]}
-        onSelect={mockOnSelect}
+        loading={true}
       />
     )
 
     expect(screen.getByText('都道府県データを読み込み中...')).toBeInTheDocument()
   })
 
+  it('データが空の場合はメッセージが表示されること', () => {
+    const mockOnSelect = jest.fn()
+    render(
+      <PrefectureSelector 
+        prefectures={[]}
+        onSelect={mockOnSelect}
+      />
+    )
+
+    expect(screen.getByText('都道府県データがありません')).toBeInTheDocument()
+  })
+
   it('カスタムクラス名が適用されること', () => {
     const mockOnSelect = jest.fn()
-    
     render(
       <PrefectureSelector 
         prefectures={mockPrefectures}
@@ -74,5 +70,37 @@ describe('PrefectureSelector', () => {
     )
 
     expect(screen.getByRole('group')).toHaveClass('custom-class')
+  })
+
+  it('アクセシビリティ属性が正しく設定されること', () => {
+    const mockOnSelect = jest.fn()
+    render(
+      <PrefectureSelector 
+        prefectures={mockPrefectures}
+        onSelect={mockOnSelect}
+      />
+    )
+
+    expect(screen.getByRole('group')).toHaveAttribute('aria-label', '都道府県選択')
+  })
+
+  it('状態が正しく管理されること', () => {
+    const mockOnSelect = jest.fn()
+    render(
+      <PrefectureSelector 
+        prefectures={mockPrefectures}
+        onSelect={mockOnSelect}
+      />
+    )
+
+    const checkbox = screen.getByLabelText('北海道')
+    
+    // 選択
+    fireEvent.click(checkbox)
+    expect(mockOnSelect).toHaveBeenCalledWith(1, true)
+    
+    // 選択解除
+    fireEvent.click(checkbox)
+    expect(mockOnSelect).toHaveBeenCalledWith(1, false)
   })
 })
