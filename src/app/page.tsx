@@ -14,38 +14,52 @@ export default function Home() {
     fetchPopulationData 
   } = usePrefectureData()
 
+  // 初期データ取得
   useEffect(() => {
     fetchPrefectures()
   }, [fetchPrefectures])
+
+  // 都道府県選択時の処理
+  const handlePrefectureSelect = (prefCode: number, checked: boolean) => {
+    if (checked) {
+      fetchPopulationData(prefCode)
+    }
+  }
 
   return (
     <main className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-8">都道府県別人口推移グラフ</h1>
       
+      {/* エラー表示 */}
       {error && (
-        <div className="text-red-600 mb-4">{error}</div>
+        <div className="text-red-600 mb-4" role="alert">
+          {error}
+        </div>
       )}
 
+      {/* ローディング表示 */}
       {loading && (
-        <div className="text-gray-600 mb-4">データを読み込み中...</div>
+        <div className="text-gray-600 mb-4" role="status">
+          データを読み込み中...
+        </div>
       )}
 
-      <PrefectureSelector
-        prefectures={prefectures}
-        onSelect={(prefCode, checked) => {
-          if (checked) {
-            fetchPopulationData(prefCode)
-          }
-        }}
-        className="mb-8"
-      />
-
-      {populationData.size > 0 && (
-        <PopulationChart
-          populationData={Array.from(populationData.values())}
-          className="mt-8"
+      {/* 都道府県選択 */}
+      <section className="mb-8">
+        <h2 className="text-xl font-semibold mb-4">都道府県を選択</h2>
+        <PrefectureSelector 
+          prefectures={prefectures}
+          onSelect={handlePrefectureSelect}
         />
-      )}
+      </section>
+
+      {/* 人口グラフ */}
+      <section>
+        <h2 className="text-xl font-semibold mb-4">人口推移グラフ</h2>
+        <PopulationChart 
+          populationData={Array.from(populationData.values())}
+        />
+      </section>
     </main>
   )
-}  
+}
