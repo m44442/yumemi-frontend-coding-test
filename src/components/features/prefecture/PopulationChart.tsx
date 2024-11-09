@@ -46,7 +46,7 @@ export const PopulationChart = ({ populationData = [], className = '' }: Populat
 
   return (
     <div className={className}>
-      <div className="mb-4 flex flex-wrap gap-2">
+      <div className="mb-5 flex flex-wrap gap-2">
         {Object.values(PopulationTypes).map(type => (
           <button
             key={type}

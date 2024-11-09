@@ -22,14 +22,14 @@ export default function Home() {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-8">都道府県別人口推移グラフ</h1>
+      <h1 className="text-center text-2xl font-bold mb-8">都道府県別人口推移グラフ</h1>
 
       {error && (
         <div className="mb-4 text-red-600" role="alert">
           {error}
         </div>
       )}
-
+     
       <PrefectureSelector 
         prefectures={prefectures}
         onSelect={(prefCode, checked) => {
