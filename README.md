@@ -1,5 +1,7 @@
 都道府県別総人口推移グラフ
 
+URL: yumemi-frontend-coding-test-six.vercel.app
+
 ## 機能
 
 -**レスポンシブデザイン**:
@@ -13,20 +15,6 @@
 
 -**レスポンシブデザイン**;
 レスポンシブデザイン対応
-
-## セットアップ手順
-
--**リポジトリのクローン**:
-git clone https://github.com/your-username/yumemi-frontend-coding-test.git
-
--**プロジェクトディレクトリへ移動**:
-cd yumemi-frontend-coding-test
-
--**依存パッケージのインストール**:
-npm install
-
-- **開発サーバーの起動**:
-  npm run dev
 
 ## 工夫した点
 
