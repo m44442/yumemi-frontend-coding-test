@@ -6,7 +6,7 @@ describe('API型定義のテスト', () => {
   test('ApiResponse型が正しく動作すること', () => {
     const response: ApiResponse<string> = {
       message: null,
-      result: 'test'
+      result: 'test',
     };
     expect(response.result).toBe('test');
     expect(response.message).toBeNull();
@@ -18,8 +18,8 @@ describe('API型定義のテスト', () => {
       message: null,
       result: [
         { prefCode: 1, prefName: '北海道' },
-        { prefCode: 2, prefName: '青森県' }
-      ]
+        { prefCode: 2, prefName: '青森県' },
+      ],
     };
     expect(response.result).toHaveLength(2);
     expect(response.result[0].prefCode).toBe(1);
@@ -36,11 +36,11 @@ describe('API型定義のテスト', () => {
             label: '総人口',
             data: [
               { year: 2020, value: 5000000 },
-              { year: 2021, value: 4900000 }
-            ]
-          }
-        ]
-      }
+              { year: 2021, value: 4900000 },
+            ],
+          },
+        ],
+      },
     };
     expect(response.result.boundaryYear).toBe(2020);
     expect(response.result.data).toHaveLength(1);

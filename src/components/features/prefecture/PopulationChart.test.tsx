@@ -11,30 +11,32 @@ const mockPopulationData: PrefecturePopulation[] = [
         label: '総人口',
         data: [
           { year: 2020, value: 5000000 },
-          { year: 2021, value: 4900000 }
-        ]
+          { year: 2021, value: 4900000 },
+        ],
       },
       {
         label: '年少人口',
         data: [
           { year: 2020, value: 800000 },
-          { year: 2021, value: 750000 }
-        ]
-      }
-    ]
-  }
+          { year: 2021, value: 750000 },
+        ],
+      },
+    ],
+  },
 ];
 
 // rechartのモック
 jest.mock('recharts', () => ({
   ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  LineChart: ({ children }: { children: React.ReactNode }) => <div data-testid="line-chart">{children}</div>,
+  LineChart: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="line-chart">{children}</div>
+  ),
   Line: () => <div data-testid="chart-line" />,
   XAxis: () => <div data-testid="x-axis" />,
   YAxis: () => <div data-testid="y-axis" />,
   CartesianGrid: () => <div data-testid="cartesian-grid" />,
   Tooltip: () => <div data-testid="tooltip" />,
-  Legend: () => <div data-testid="legend" />
+  Legend: () => <div data-testid="legend" />,
 }));
 
 describe('PopulationChart', () => {
@@ -45,25 +47,25 @@ describe('PopulationChart', () => {
 
   it('すべての人口種別ボタンが表示されること', () => {
     render(<PopulationChart populationData={mockPopulationData} />);
-    
-    Object.values(PopulationTypes).forEach(type => {
+
+    Object.values(PopulationTypes).forEach((type) => {
       expect(screen.getByText(type)).toBeInTheDocument();
     });
   });
 
   it('人口種別を切り替えできること', () => {
     render(<PopulationChart populationData={mockPopulationData} />);
-    
+
     const youngPopButton = screen.getByText(PopulationTypes.YOUNG);
     fireEvent.click(youngPopButton);
-    
+
     expect(youngPopButton).toHaveClass('bg-blue-600');
     expect(screen.getByText(PopulationTypes.TOTAL)).toHaveClass('bg-gray-100');
   });
 
   it('グラフの要素が正しく表示されること', () => {
     render(<PopulationChart populationData={mockPopulationData} />);
-    
+
     expect(screen.getByTestId('line-chart')).toBeInTheDocument();
     expect(screen.getByTestId('x-axis')).toBeInTheDocument();
     expect(screen.getByTestId('y-axis')).toBeInTheDocument();
@@ -78,7 +80,7 @@ describe('PopulationChart', () => {
     const { container } = render(
       <PopulationChart populationData={mockPopulationData} className={className} />
     );
-    
+
     expect(container.firstChild).toHaveClass(className);
   });
 });

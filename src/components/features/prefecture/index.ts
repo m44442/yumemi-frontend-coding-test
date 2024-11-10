@@ -1,2 +1,2 @@
-export * from './PrefectureSelector'
-export * from './PopulationChart'
+export * from './PrefectureSelector';
+export * from './PopulationChart';
