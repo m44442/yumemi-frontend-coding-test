@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+都道府県別総人口推移グラフ
 
-## Getting Started
+## 機能
 
-First, run the development server:
+-**レスポンシブデザイン**:
+都道府県の選択（複数選択可能）
 
-```bash
+-**レスポンシブデザイン**:
+人口推移のグラフ手順
+
+-**レスポンシブデザイン**:
+人口種別切り替え（総人口、年少人口、生産年齢人口、老年齢人口）
+
+-**レスポンシブデザイン**;
+レスポンシブデザイン対応
+
+## セットアップ手順
+
+-**リポジトリのクローン**:
+git clone https://github.com/your-username/yumemi-frontend-coding-test.git
+
+-**プロジェクトディレクトリへ移動**:
+cd yumemi-frontend-coding-test
+
+-**依存パッケージのインストール**:
+npm install
+
+- **開発サーバーの起動**:
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 工夫した点
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **レスポンシブデザイン**:
+  - Tailwind CSS を使用して、スマホ、タブレット、デスクトップなど様々なデバイスに対応するレスポンシブデザインを実現しました。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **効率的なデータ取得**:
+  - `usePrefectureData` フックを作成し、都道府県データと人口データの取得を効率的に行うようにしました。
+  - データ取得時のローディング状態やエラーハンドリングを追加しました。
 
-## Learn More
+- **再利用可能なコンポーネント**:
+  - `Checkbox` や `PrefectureSelector` などの再利用可能なコンポーネントを作成し、コードの再利用性を高めることを意識しました。
 
-To learn more about Next.js, take a look at the following resources:
+- **グラフのカスタマイズ**:
+  - グラフの色やスタイルをカスタマイズし、見やすさを向上させました。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **エラーハンドリング**:
+  - API からのデータ取得時にエラーが発生した場合、ユーザーに適切なエラーメッセージを表示するようにしました。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **テストの実装**:
+  - 各コンポーネントやフックに対して単体テストを実装し、コードの品質の保証を意識しました。
+  - Jest を使用してテスト実行を行いました。
 
-## Deploy on Vercel
+- **コードの可読性**:
+  - コメントを追加し、コードの可読性を意識しました。
+  -　変数名は処理内容が分かりやすいようにこだわりました。
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 苦労した点
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### グラフの実装について
+- **複数都道府県のデータ表示**:
+  - 複数の都道府県データを同時に表示する際、データの構造化と管理が複雑でした。
+  - `Map` オブジェクトを使用してデータを効率的に管理し、都道府県の追加・削除を簡単にできるようにしました。
+
+- **グラフの動的更新**:
+  - チェックボックスの選択状態に応じてグラフをリアルタイムに更新する処理が難しかったです。
+  - `useMemo` フックを活用してデータの再計算を最適化しました。
+
+- **レスポンシブ対応**:
+  - 様々な画面サイズでグラフを適切に表示することに苦労しました。
+  - Tailwind CSS を活用し、画面サイズに応じて適切なグラフサイズを設定しました。
+
+### 都道府県一覧の取得について
+- **APIレスポンスの型定義**:
+  - RESAS APIからのレスポンスの型定義が複雑で、適切な型付けに時間がかかりました。
+  - TypeScriptの型定義を慎重に行い、型安全性を確保しました。
+
+- **エラーハンドリング**:
+  - APIキーの認証エラーや通信エラーなど、様々なエラーケースへの対応が必要でした。
+  - try-catch文を適切に配置し、エラーメッセージを明確に表示するようにしました。
+
+
